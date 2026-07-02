@@ -20,9 +20,5 @@ jobs:
       - name: Install and test
         run: uv sync && uv run pytest
 
-      # Temporary: force CI fail on Felix upgrade PRs so we can test auto-remediation.
-      - name: Felix remediate test gate
-        if: startsWith(github.head_ref, 'felix/upgrade/')
-        run: |
-          echo "Intentional failure for Felix remediate testing"
-          exit 1
+
+
