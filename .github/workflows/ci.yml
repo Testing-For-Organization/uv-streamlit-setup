@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install and test
+        run: uv sync && uv run pytest
+
+      # Temporary: force CI fail on Felix upgrade PRs so we can test auto-remediation.
+      - name: Felix remediate test gate
+        if: startsWith(github.head_ref, 'felix/upgrade/')
+        run: |
+          echo "Intentional failure for Felix remediate testing"
+          exit 1
