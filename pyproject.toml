@@ -9,6 +9,8 @@ dependencies = [
     "streamlit>=1.40.2",
     # security: pinned transitive dep of requests
     "urllib3==2.6.3",
+    # security: pinned transitive dep of streamlit
+    "tornado==6.5.7",
 ]
 
 [build-system]
