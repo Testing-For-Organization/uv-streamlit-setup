@@ -9,7 +9,9 @@ permissions:
 
 jobs:
   build:
+    name: build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -17,8 +19,22 @@ jobs:
         with:
           enable-cache: true
 
-      - name: Install and test
-        run: uv sync && uv run pytest
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Run unit + Felix integration tests
+        run: uv run pytest tests/test_simple.py tests/test_felix_integration.py -q --tb=short
+
+      - name: Import smoke check
+        run: |
+          uv run python -c "
+          import streamlit as st
+          import requests
+          import urllib3
+          print(f'streamlit={st.__version__}')
+          print(f'requests={requests.__version__}')
+          print(f'urllib3={urllib3.__version__}')
+          "
 
       # Temporary: force CI fail on Felix upgrade PRs so we can test auto-remediation.
       - name: Felix remediate test gate
