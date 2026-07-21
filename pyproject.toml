@@ -9,7 +9,7 @@ dependencies = [
     "streamlit>=1.40.2",
     # Pin requests 2.28 for Felix QA. App uses urllib3 Retry(method_whitelist=...)
     # via http_util. Upgrading requests to 2.32+ pulls urllib3 2.x and breaks for real.
-    "requests==2.28.0",
+    "requests==2.33.0",
 ]
 
 [build-system]

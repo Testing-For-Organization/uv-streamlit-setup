@@ -1,9 +1,7 @@
 """HTTP helpers used by the app — depends on requests.
 
-Uses ``HTTPResponse`` re-exported from ``requests.adapters`` (available in
-requests 2.28, removed in 2.32+). Upgrading requests to the Dash-recommended
-2.33.x makes imports fail — a genuine integration/CI failure for Felix
-remediation to fix (import from urllib3.response instead).
+Uses ``HTTPResponse`` from ``urllib3.response`` (re-exported from
+``requests.adapters`` in requests 2.28, removed in 2.32+).
 """
 
 from __future__ import annotations
@@ -11,7 +9,8 @@ from __future__ import annotations
 from typing import Any
 
 import requests
-from requests.adapters import HTTPAdapter, HTTPResponse
+from requests.adapters import HTTPAdapter
+from urllib3.response import HTTPResponse
 
 
 def build_session() -> requests.Session:
@@ -28,7 +27,7 @@ def prepare_example_request() -> requests.PreparedRequest:
 
 
 def response_type_name() -> str:
-    """Touch the legacy adapters.HTTPResponse export Felix upgrades remove."""
+    """Return the name of the HTTPResponse class (from urllib3.response)."""
     return HTTPResponse.__name__
 
 
