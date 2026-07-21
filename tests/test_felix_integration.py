@@ -2,13 +2,20 @@
 
 These tests exercise runtime dependencies Felix may upgrade. If an upgrade
 breaks imports or basic APIs, CI fails and Dash can spawn remediate_pr_checks.
+
+Also includes a canary that fails only on felix/upgrade/* branches so
+remediation must edit application code (not the workflow YAML) to go green.
 """
 
 from __future__ import annotations
 
+import os
+
 import requests
 import streamlit as st
 import urllib3
+
+from myproject.pkg1 import simple_fn
 
 
 def test_streamlit_runtime_api() -> None:
@@ -46,3 +53,20 @@ def test_dependency_versions_are_reported() -> None:
     for name, version in versions.items():
         assert version, f"{name} version missing"
     print(versions)
+
+
+def test_felix_remediation_canary() -> None:
+    """Fail only on Felix upgrade PRs until app code is remediated.
+
+    Remediation must set:
+      myproject.pkg1.simple_fn.FELIX_REMEDIATION_MARKER = \"ok\"
+    Deleting this test or the CI workflow gate is not the intended fix.
+    """
+    head_ref = os.environ.get("GITHUB_HEAD_REF", "")
+    if not head_ref.startswith("felix/upgrade/"):
+        return
+
+    assert simple_fn.FELIX_REMEDIATION_MARKER == "ok", (
+        "Felix remediation QA canary: set "
+        "myproject.pkg1.simple_fn.FELIX_REMEDIATION_MARKER = 'ok'"
+    )
