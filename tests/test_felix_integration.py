@@ -1,7 +1,7 @@
 """Integration tests — fail for real when requests is upgraded past 2.28.
 
 Dash issue lists: requests 2.28.0 → 2.33.0.
-App imports HTTPResponse from requests.adapters (removed in newer requests).
+App now imports HTTPResponse from urllib3.response (removed from requests.adapters).
 """
 
 from __future__ import annotations
